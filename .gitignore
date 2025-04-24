@@ -1,0 +1,10 @@
+# editor directories and files
+.vs/
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.direnv/
+
+# build artifacts
+build/
+out/
