@@ -3,61 +3,138 @@
     "include": [ "CMakeEnv.json" ],
     "configurePresets": [
         {
-            "name": "windows-base",
+            "name": "base",
             "inherits": "env-base",
             "hidden": true,
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/out/build/${presetName}",
             "installDir": "${sourceDir}/out/install/${presetName}",
-            "cacheVariables": {
-                "CMAKE_C_COMPILER": "cl.exe",
-                "CMAKE_CXX_COMPILER": "cl.exe"
-            },
-            "condition": {
-                "type": "equals",
-                "lhs": "${hostSystemName}",
-                "rhs": "Windows"
-            }
-        },
-        {
-            "name": "x64-debug",
-            "displayName": "x64 Debug",
-            "inherits": "windows-base",
             "architecture": {
                 "value": "x64",
                 "strategy": "external"
             },
             "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+            }
+        },
+        {
+            "name": "windows",
+            "inherits": "base",
+            "hidden": true,
+            "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" }
+        },
+        {
+            "name": "macos",
+            "inherits": "base",
+            "hidden": true,
+            "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Darwin" }
+        },
+        {
+            "name": "cc-msvc",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "cl.exe",
+                "CMAKE_CXX_COMPILER": "cl.exe"
+            }
+        },
+        {
+            "name": "cc-msvc-clang",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang-cl.exe",
+                "CMAKE_CXX_COMPILER": "clang-cl.exe"
+            }
+        },
+        {
+            "name": "cc-clang",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++"
+            }
+        },
+        {
+            "name": "debug",
+            "hidden": true,
+            "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug"
             }
         },
         {
-            "name": "x64-release",
-            "displayName": "x64 Release",
-            "inherits": "x64-debug",
+            "name": "release",
+            "hidden": true,
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release"
             }
         },
         {
-            "name": "x86-debug",
-            "displayName": "x86 Debug",
-            "inherits": "windows-base",
-            "architecture": {
-                "value": "x86",
-                "strategy": "external"
-            },
+            "name": "relwithdebug",
+            "hidden": true,
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug"
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
             }
         },
         {
-            "name": "x86-release",
-            "displayName": "x86 Release",
-            "inherits": "x86-debug",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release"
-            }
+            "name": "win-debug",
+            "displayName": "Debug",
+            "inherits": [ "windows", "cc-msvc", "debug" ]
+        },
+        {
+            "name": "win-release",
+            "displayName": "Release",
+            "inherits": [ "windows", "cc-msvc", "release" ]
+        },
+        {
+            "name": "win-relWithDebug",
+            "displayName": "Release with Debug Info",
+            "inherits": [ "windows", "cc-msvc", "relwithdebug" ]
+        },
+        {
+            "name": "macos-debug",
+            "displayName": "Debug",
+            "inherits": [ "macos", "cc-clang", "debug" ]
+        },
+        {
+            "name": "macos-release",
+            "displayName": "Release",
+            "inherits": [ "macos", "cc-clang", "release" ]
+        },
+        {
+            "name": "macos-relWithDebug",
+            "displayName": "Release with Debug Info",
+            "inherits": [ "macos", "cc-clang", "relwithdebug" ]
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "win-debug",
+            "displayName": "Debug",
+            "configurePreset": "win-debug"
+        },
+        {
+            "name": "win-release",
+            "displayName": "Release",
+            "configurePreset": "win-release"
+        },
+        {
+            "name": "win-relWithDebug",
+            "displayName": "Release with Debug Info",
+            "configurePreset": "win-relWithDebug"
+        },
+        {
+            "name": "macos-debug",
+            "displayName": "Debug",
+            "configurePreset": "macos-debug"
+        },
+        {
+            "name": "macos-release",
+            "displayName": "Release",
+            "configurePreset": "macos-release"
+        },
+        {
+            "name": "macos-relWithDebug",
+            "displayName": "Release with Debug Info",
+            "configurePreset": "macos-relWithDebug"
         }
     ]
 }
