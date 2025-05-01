@@ -1,8 +1,12 @@
 ---
 Language: Cpp
-BasedOnStyle: LLVM 
+BasedOnStyle: LLVM
+ColumnLimit: 100
 PointerAlignment: Left
-IndentWidth: 4
+# AccessModifierOffset: -4
+# IndentWidth: 4
+NamespaceIndentation: All
+AllowShortCaseLabelsOnASingleLine: true
 IncludeBlocks: Regroup
 IncludeCategories:
   - Regex:           '^.*/'
@@ -18,7 +22,6 @@ IncludeCategories:
     SortPriority:    0
     CaseSensitive:   false
 
-# AccessModifierOffset: -2
 # AlignAfterOpenBracket: Align
 # AlignArrayOfStructures: None
 # AlignConsecutiveAssignments:
@@ -53,7 +56,6 @@ IncludeCategories:
 # AllowAllArgumentsOnNextLine: true
 # AllowAllParametersOfDeclarationOnNextLine: true
 # AllowShortBlocksOnASingleLine: Never
-# AllowShortCaseLabelsOnASingleLine: false
 # AllowShortEnumsOnASingleLine: true
 # AllowShortFunctionsOnASingleLine: All
 # AllowShortIfStatementsOnASingleLine: Never
@@ -98,7 +100,6 @@ IncludeCategories:
 # BreakConstructorInitializers: BeforeColon
 # BreakInheritanceList: BeforeColon
 # BreakStringLiterals: true
-# ColumnLimit:     80
 # CommentPragmas:  '^ IWYU pragma:'
 # CompactNamespaces: false
 # ConstructorInitializerIndentWidth: 4
@@ -144,7 +145,6 @@ IncludeCategories:
 # MacroBlockBegin: ''
 # MacroBlockEnd:   ''
 # MaxEmptyLinesToKeep: 1
-# NamespaceIndentation: None
 # ObjCBinPackProtocolList: Auto
 # ObjCBlockIndentWidth: 2
 # ObjCBreakBeforeNestedBlockParam: true
