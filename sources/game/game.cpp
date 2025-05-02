@@ -1,8 +1,13 @@
 #include "game.h"
 
+#include <cstdint>
 #include <optional>
 
+#include <SDL3/SDL_events.h>
+#include <SDL3/SDL_init.h>
+#include <SDL3/SDL_keycode.h>
 #include <SDL3/SDL_scancode.h>
+#include <SDL3/SDL_timer.h>
 #include <sdlpp/error.h>
 #include <sdlpp/events.h>
 #include <sdlpp/init.h>
@@ -28,6 +33,8 @@ namespace sdlgame {
     if (window = sdl::video::createWindow(meta::name, 800, 600, windowFlags); !window) {
       throw AppError(Tag::CreateWindow, sdl::error::get());
     }
+
+    frameStartTime = SDL_GetTicksNS();
   }
 
   Game::~Game() {
@@ -57,6 +64,32 @@ namespace sdlgame {
     }
   }
 
+  SDL_AppResult Game::render() {
+    printFrameTimings();
+    return SDL_APP_CONTINUE;
+  }
+
+  SDL_AppResult Game::handleEvent(SDL_Event* event) {
+    auto ev = sdl::events::Event(*event);
+    auto ret = SDL_APP_CONTINUE;
+
+    switch (ev.type()) {
+      using namespace sdl::events::EventType;
+
+    case Quit: ret = SDL_APP_SUCCESS; break;
+    case KeyUp:
+      auto key = ev.event.key;
+      if (key.scancode == SDL_SCANCODE_Q || key.key == SDLK_ESCAPE) {
+        ret = SDL_APP_SUCCESS;
+        sdl::log::info("got quit");
+      }
+      break;
+    default: break;
+    }
+
+    return ret;
+  }
+
   auto Game::setup() -> std::optional<AppError> {
     using enum sdl::init::flags;
 
@@ -73,4 +106,20 @@ namespace sdlgame {
     return {};
   }
 
+  void Game::printFrameTimings() {
+    constexpr auto fps = 30.0;
+    constexpr auto frameTimeNs = 1'000'000'000 / fps;
+
+    const auto frameEndTime = SDL_GetTicksNS();
+    const auto deltaT = frameEndTime - frameStartTime;
+    frameStartTime = frameEndTime;
+    const auto delay = (uint64_t)frameTimeNs - deltaT;
+
+    const auto deltaTMs = static_cast<double>(deltaT) / 1'000'000;
+    const auto delayMs = static_cast<double>(delay) / 1'000'000;
+    sdl::log::debug("frame time: %0.2f ms, sleep %0.2f ms (%d sleep, %d ns)", deltaTMs, delayMs, delay, deltaT);
+
+    if (delay > 0)
+      SDL_DelayNS(delay);
+  }
 } // namespace sdlgame

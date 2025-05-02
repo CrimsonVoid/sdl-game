@@ -2,7 +2,11 @@
 
 #include <optional>
 
+#include <cstdint>
 #include "error.h"
+
+enum SDL_AppResult;
+union SDL_Event;
 
 struct SDL_Window;
 
@@ -19,11 +23,15 @@ namespace sdlgame {
     ~Game();
 
     void runLoop(this const Game&);
+    SDL_AppResult render();
+    SDL_AppResult handleEvent(SDL_Event*);
 
   private:
     static auto setup() -> std::optional<AppError>;
+    void printFrameTimings();
 
   private:
     SDL_Window* window;
+    uint64_t frameStartTime;
   };
 } // namespace sdlgame
