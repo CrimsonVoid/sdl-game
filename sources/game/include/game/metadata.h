@@ -6,16 +6,14 @@
 #include <sdlpp/init.h>
 
 namespace sdlgame::meta {
-  using enum sdl::init::MetadataProperty;
-
   constexpr auto name = "sdl-game";
   constexpr auto version = "0.1.0";
   constexpr auto identifier = "com.example.sdl-game";
 
   constexpr auto properties = std::array{
-      std::tuple{Type, "game"},
-      // std::tuple{Creator, nullptr},
-      // std::tuple{Copyright, nullptr},
-      // std::tuple{Url, nullptr},
+      std::tuple{sdl::init::MetadataProperty::Type, "game"},
+      // std::tuple{sdl::init::MetadataProperty::Creator, nullptr},
+      // std::tuple{sdl::init::MetadataProperty::Copyright, nullptr},
+      // std::tuple{sdl::init::MetadataProperty::Url, nullptr},
   };
 } // namespace sdlgame::meta

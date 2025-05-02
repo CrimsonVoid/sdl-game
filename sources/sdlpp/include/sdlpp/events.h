@@ -1,7 +1,8 @@
 #pragma once
 
+#include <stdint.h>
+
 #include <SDL3/SDL_events.h>
-#include <SDL3/SDL_stdinc.h>
 
 namespace sdl::events {
   struct Type {
@@ -13,7 +14,9 @@ namespace sdl::events {
 
     inline bool isEnabled(this Type self) { return SDL_EventEnabled(self.ty); }
 
-    inline void setEnabled(Uint32 ty, bool enabled) { return SDL_SetEventEnabled(ty, enabled); };
+    inline void setEnabled(this Type self, bool enabled) {
+      return SDL_SetEventEnabled(self.ty, enabled);
+    };
 
     inline void flush(this Type self) { return SDL_FlushEvent(self.ty); }
 
@@ -190,7 +193,7 @@ namespace sdl::events {
 
     inline bool wait() { return SDL_WaitEvent(&event); };
 
-    inline bool waitTimeout(Sint32 timeoutMS) { return SDL_WaitEventTimeout(&event, timeoutMS); };
+    inline bool waitTimeout(int32_t timeoutMS) { return SDL_WaitEventTimeout(&event, timeoutMS); };
 
     inline constexpr Type type() const noexcept { return event.type; }
 
@@ -209,6 +212,7 @@ namespace sdl::events {
 
 } // namespace sdl::events
 
+// todo: unimplemented
 // SDL_AddEventWatch
 // SDL_FilterEvents
 // SDL_GetEventDescription

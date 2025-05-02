@@ -2,9 +2,7 @@
 
 #include <optional>
 
-#include <SDL3/SDL.h>
-#include <SDL3/SDL_events.h>
-#include <SDL3/SDL_keycode.h>
+#include <SDL3/SDL_scancode.h>
 #include <sdlpp/error.h>
 #include <sdlpp/events.h>
 #include <sdlpp/init.h>
@@ -46,11 +44,10 @@ namespace sdlgame {
 
       while (ev.poll()) {
         using namespace sdl::events::EventType;
-
         switch (ev.type()) {
         case Quit: done = true; break;
         case KeyUp:
-          done = ev.event.key.key == SDLK_Q || ev.event.key.key == SDLK_ESCAPE;
+          done = ev.event.key.scancode == SDL_SCANCODE_Q || ev.event.key.key == SDL_SCANCODE_ESCAPE;
           if (done)
             sdl::log::info("got quit");
           break;

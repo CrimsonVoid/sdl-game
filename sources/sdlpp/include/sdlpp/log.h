@@ -72,6 +72,10 @@ namespace sdl::log {
       return self.prio == other;
     }
 
+    inline bool setPrefix(this priority self, const char* prefix) {
+      return SDL_SetLogPriorityPrefix(self.prio, prefix);
+    }
+
     SDL_LogPriority prio;
   };
 
@@ -99,4 +103,3 @@ namespace sdl::log {
 // SDL_GetDefaultLogOutputFunction
 // SDL_GetLogOutputFunction
 // SDL_SetLogOutputFunction
-// SDL_SetLogPriorityPrefix

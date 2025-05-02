@@ -65,10 +65,13 @@ namespace sdl::init {
     return SDL_SetAppMetadataProperty(mstr(p), val);
   }
 
+  inline const char* getAppMetadataProperty(MetadataProperty p) {
+    return SDL_GetAppMetadataProperty(mstr(p));
+  }
+
   inline flags wasInit(flags f) { return static_cast<flags>(SDL_WasInit(flags_t(f))); }
 
 } // namespace sdl::init
 
 // todo: unimplemented
-// SDL_GetAppMetadataProperty
 // SDL_RunOnMainThread

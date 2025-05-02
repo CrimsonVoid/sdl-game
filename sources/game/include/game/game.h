@@ -2,9 +2,9 @@
 
 #include <optional>
 
-#include <SDL3/SDL_video.h>
-
 #include "error.h"
+
+struct SDL_Window;
 
 namespace sdlgame {
   enum struct GfxBackend { DX, Vulkan, Metal, OpenGL };

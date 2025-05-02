@@ -24,12 +24,12 @@ int main(int argc, char* argv[]) {
   return 0;
 }
 
-constexpr auto osDefaultBacked() -> sdlgame::GfxBackend {
+inline constexpr auto osDefaultBacked() -> sdlgame::GfxBackend {
 #ifdef _WIN64
   return sdlgame::GfxBackend::DX;
-#elifdef __APPLE__
+#elif defined __APPLE__
   return sdlgame::GfxBackend::Metal;
-#elifdef __linux__
+#elif defined __linux__
   return sdlgame::GfxBackend::Vulkan;
 #else
   return sdlgame::GfxBackend::OpenGL;
