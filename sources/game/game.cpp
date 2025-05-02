@@ -33,9 +33,8 @@ namespace sdlgame {
   }
 
   Game::~Game() {
-    sdl::log::debug("destroy window");
+    sdl::log::debug("quit sdl");
     sdl::video::destroyWindow(window);
-    sdl::log::info("quit sdl");
     sdl::init::quit();
   }
 

@@ -5,6 +5,7 @@
 #include "game.h"
 
 void printSdlVersion();
+constexpr auto osDefaultBacked() -> sdlgame::GfxBackend;
 
 int main(int argc, char* argv[]) {
   // silence unused variable warnings
@@ -14,13 +15,25 @@ int main(int argc, char* argv[]) {
   printSdlVersion();
 
   try {
-    auto g = sdlgame::Game(sdlgame::GfxBackend::Metal);
+    auto g = sdlgame::Game(osDefaultBacked());
     g.runLoop();
   } catch (const sdlgame::AppError& e) {
     sdl::log::critical("uncaught app error (%s): %s", e.tag_s(), e.what());
   }
 
   return 0;
+}
+
+constexpr auto osDefaultBacked() -> sdlgame::GfxBackend {
+#ifdef _WIN64
+  return sdlgame::GfxBackend::DX;
+#elifdef __APPLE__
+  return sdlgame::GfxBackend::Metal;
+#elifdef __linux__
+  return sdlgame::GfxBackend::Vulkan;
+#else
+  return sdlgame::GfxBackend::OpenGL;
+#endif
 }
 
 void printSdlVersion() {
