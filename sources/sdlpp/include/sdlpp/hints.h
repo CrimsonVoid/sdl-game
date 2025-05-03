@@ -277,10 +277,3 @@ namespace sdl::hints {
 // todo: unimplemented
 // SDL_AddHintCallback
 // SDL_RemoveHintCallback
-
-void hinte() {
-  //
-  sdl::hints::AppId.reset();
-  sdl::hints::AppId.set("nada");
-  sdl::hints::AppId.set("boo!", sdl::hints::Priority::Override);
-}
