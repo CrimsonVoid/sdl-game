@@ -20,4 +20,3 @@ clean: ## remove cmake build artifacts
 
 fclean: ## full clean build dir
 	rm -rf $(BUILD_DIR)
-
