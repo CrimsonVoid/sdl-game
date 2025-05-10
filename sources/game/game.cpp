@@ -80,14 +80,17 @@ namespace sdlgame {
     switch (ev.type()) {
       using namespace sdl::events::EventType;
     case Quit: ret = SDL_APP_SUCCESS; break;
-    case KeyUp:
+    case KeyUp: {
       auto key = ev.event.key;
       if (key.scancode == SDL_SCANCODE_Q || key.key == SDLK_ESCAPE) {
         ret = SDL_APP_SUCCESS;
         sdl::log::info("got quit");
       }
       break;
-    default: break;
+    }
+    default: {
+      break;
+    }
     }
 
     eventTime += SDL_GetTicksNS() - start;
