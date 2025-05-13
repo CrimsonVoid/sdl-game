@@ -141,7 +141,7 @@ namespace sdlgame {
         static_cast<float64_t>(eventTime) / (numEvents ? static_cast<float64_t>(numEvents) : 1.0);
     const auto avgEventTimeMs = static_cast<double>(avgEventTime) / 1'000'000.0;
 
-    sdl::log::debug("frame time: %0.2f ms; avgEventTime: %f (%d / %d)", deltaTMs, avgEventTimeMs,
+    sdl::log::debug("frame time: {:0.2f} ms; avgEventTime: {} ({} / {})", deltaTMs, avgEventTimeMs,
                     eventTime, numEvents);
 
     eventTime = 0, numEvents = 0;

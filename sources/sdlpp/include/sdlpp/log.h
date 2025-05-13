@@ -1,5 +1,6 @@
 #pragma once
 
+#include <format>
 #include <initializer_list>
 #include <type_traits>
 #include <utility>
@@ -57,11 +58,12 @@ namespace sdl::log {
     }
 
     template <typename... Args>
-    inline void operator()(this priority self, category cat, const char* fmt, Args&&... args) {
+    inline void operator()(this priority self, category cat, std::format_string<Args...> fmt,
+                           Args&&... args) {
       return message(cat, self, fmt, std::forward<Args>(args)...);
     }
     template <typename... Args>
-    inline void operator()(this priority self, const char* fmt, Args&&... args) {
+    inline void operator()(this priority self, std::format_string<Args...> fmt, Args&&... args) {
       return self(category::Application, fmt, std::forward<Args>(args)...);
     }
 
@@ -90,8 +92,10 @@ namespace sdl::log {
   static constexpr priority count{SDL_LOG_PRIORITY_COUNT};
 
   template <typename... Args>
-  inline void message(category cat, priority prio, const char* fmt, Args&&... args) {
-    return SDL_LogMessage(category_t(cat), prio.prio, fmt, std::forward<Args>(args)...);
+  inline void message(category cat, priority prio, std::format_string<Args...> fmt,
+                      Args&&... args) {
+    return SDL_LogMessage(category_t(cat), prio.prio,
+                          std::format(fmt, std::forward<Args>(args)...).c_str());
   }
 
   inline void resetPriorities() { return SDL_ResetLogPriorities(); }

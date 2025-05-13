@@ -21,7 +21,7 @@ SDL_AppResult SDL_AppInit(void** appState, int argc, char* argv[]) {
     auto g = new sdlgame::Game();
     *appState = g;
   } catch (const sdlgame::AppError& e) {
-    sdl::log::critical("uncaught app error (%s): %s", e.tag_s(), e.what());
+    sdl::log::critical("uncaught app error ({}): {}", e.tag_s(), e.what());
     return SDL_APP_FAILURE;
   }
 
@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
     auto g = sdlgame::Game();
     g.runLoop();
   } catch (const sdlgame::AppError& e) {
-    sdl::log::critical("uncaught app error (%s): %s", e.tag_s(), e.what());
+    sdl::log::critical("uncaught app error ({}): {}", e.tag_s(), e.what());
   }
 
   return 0;
@@ -71,8 +71,8 @@ int main(int argc, char* argv[]) {
 
 void printSdlVersion() {
   const auto linkVer = SDL_GetVersion();
-  sdl::log::debug("SDL Compile Version: %d.%d.%d", SDL_MAJOR_VERSION, SDL_MINOR_VERSION,
+  sdl::log::debug("SDL Compile Version: {}.{}.{}", SDL_MAJOR_VERSION, SDL_MINOR_VERSION,
                   SDL_MICRO_VERSION);
-  sdl::log::debug("SDL Link Version:    %d.%d.%d", SDL_VERSIONNUM_MAJOR(linkVer),
+  sdl::log::debug("SDL Link Version:    {}.{}.{}", SDL_VERSIONNUM_MAJOR(linkVer),
                   SDL_VERSIONNUM_MINOR(linkVer), SDL_VERSIONNUM_MICRO(linkVer));
 }
