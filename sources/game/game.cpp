@@ -3,11 +3,10 @@
 #include <chrono>
 #include <cstdint>
 #include <optional>
+#include <ratio>
 
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_init.h>
-#include <SDL3/SDL_keycode.h>
-#include <SDL3/SDL_scancode.h>
 #include <SDL3/SDL_timer.h>
 #include <sdlpp/error.h>
 #include <sdlpp/events.h>
@@ -53,19 +52,21 @@ namespace sdlgame {
   }
 
   SDL_AppResult Game::handleEvent(SDL_Event* event) {
+    namespace events = sdl::events;
+    using namespace sdl::events::EventType;
+
     const auto start = SDL_GetTicksNS();
     const auto ev = sdl::events::Event(event);
     auto ret = SDL_APP_CONTINUE;
 
     switch (ev.type()) {
-      using namespace sdl::events::EventType;
     case Quit: {
       ret = SDL_APP_SUCCESS;
       break;
     }
     case KeyUp: {
-      auto key = ev.event->key;
-      if (key.scancode == SDL_SCANCODE_Q || key.key == SDLK_ESCAPE) {
+      const auto& key = ev.event->key;
+      if (key.scancode == events::ScanCode::Q || key.key == events::KeyCode::Escape) {
         ret = SDL_APP_SUCCESS;
         sdl::log::info("got quit");
       }
@@ -90,9 +91,8 @@ namespace sdlgame {
     if (fps < 10) {
       fpsStr[0] = '0' + static_cast<char>(fps);
     } else if (fps < 100) {
-      fpsStr[0] = '0';
-      fpsStr[1] = '0' + static_cast<char>(fps / 10);
-      fpsStr[2] = '0' + static_cast<char>(fps % 10);
+      fpsStr[0] = '0' + static_cast<char>(fps / 10);
+      fpsStr[1] = '0' + static_cast<char>(fps % 10);
     } else {
       fpsStr[0] = '0' + static_cast<char>(fps / 100);
       fpsStr[1] = '0' + static_cast<char>((fps / 10) % 10);
