@@ -3,13 +3,13 @@
 #include <string>
 
 namespace sdlgame {
-  enum struct Tag { Setup, CreateWindow };
+  enum struct ErrTag { Setup, CreateWindow };
 
   struct AppError {
     std::string message;
-    Tag tag;
+    ErrTag tag;
 
-    AppError(Tag tag, const char* msg);
+    AppError(ErrTag tag, const char* msg);
 
     const char* tag_s() const noexcept;
 

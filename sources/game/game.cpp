@@ -1,5 +1,6 @@
 #include "game.h"
 
+#include <chrono>
 #include <cstdint>
 #include <optional>
 
@@ -32,7 +33,7 @@ namespace sdlgame {
     auto windowFlags = Resizable | HighPixelDensity | gfxBackend;
 
     if (window = sdl::video::createWindow(meta::name, 800, 600, windowFlags); !window) {
-      throw AppError(Tag::CreateWindow, sdl::error::get());
+      throw AppError(ErrTag::CreateWindow, sdl::error::get());
     }
 
     setFps(fps);
@@ -45,27 +46,6 @@ namespace sdlgame {
     sdl::init::quit();
   }
 
-  void Game::runLoop(this const Game&) {
-    auto done = false;
-
-    while (!done) {
-      auto ev = sdl::events::Event{};
-
-      while (ev.poll()) {
-        using namespace sdl::events::EventType;
-        switch (ev.type()) {
-        case Quit: done = true; break;
-        case KeyUp:
-          done = ev.event.key.scancode == SDL_SCANCODE_Q || ev.event.key.key == SDL_SCANCODE_ESCAPE;
-          if (done)
-            sdl::log::info("got quit");
-          break;
-        default: break;
-        }
-      }
-    }
-  }
-
   SDL_AppResult Game::render() {
     printFrameTimings();
     frameStartTime = SDL_GetTicksNS();
@@ -74,14 +54,17 @@ namespace sdlgame {
 
   SDL_AppResult Game::handleEvent(SDL_Event* event) {
     const auto start = SDL_GetTicksNS();
-    const auto ev = sdl::events::Event(*event);
+    const auto ev = sdl::events::Event(event);
     auto ret = SDL_APP_CONTINUE;
 
     switch (ev.type()) {
       using namespace sdl::events::EventType;
-    case Quit: ret = SDL_APP_SUCCESS; break;
+    case Quit: {
+      ret = SDL_APP_SUCCESS;
+      break;
+    }
     case KeyUp: {
-      auto key = ev.event.key;
+      auto key = ev.event->key;
       if (key.scancode == SDL_SCANCODE_Q || key.key == SDLK_ESCAPE) {
         ret = SDL_APP_SUCCESS;
         sdl::log::info("got quit");
@@ -129,22 +112,25 @@ namespace sdlgame {
 
     auto flags = Audio | Video | Haptic | Gamepad | Events;
     if (!sdl::init::init(flags)) {
-      return AppError(Tag::Setup, sdl::error::get());
+      return AppError(ErrTag::Setup, sdl::error::get());
     }
 
     return {};
   }
 
   void Game::printFrameTimings() {
-    const auto frameEndTime = SDL_GetTicksNS();
-    const auto deltaT = frameEndTime - frameStartTime;
-    const auto deltaTMs = static_cast<double>(deltaT) / 1'000'000.0;
+    namespace chrono = std::chrono;
+    using doubleMilli = chrono::duration<double, std::milli>;
 
-    const auto avgEventTime =
-        static_cast<float64_t>(eventTime) / (numEvents ? static_cast<float64_t>(numEvents) : 1.0);
-    const auto avgEventTimeMs = static_cast<double>(avgEventTime) / 1'000'000.0;
+    const auto frameEndTime = chrono::nanoseconds{SDL_GetTicksNS()};
+    const auto startTime = chrono::nanoseconds{frameStartTime};
+    const auto deltaT = chrono::duration_cast<doubleMilli>(frameEndTime - startTime);
 
-    sdl::log::debug("frame time: {:0.2f} ms; avgEventTime: {} ({} / {})", deltaTMs, avgEventTimeMs,
+    const auto eventTimeNs = chrono::nanoseconds{eventTime};
+    const auto numEvts = numEvents != 0 ? static_cast<float64_t>(numEvents) : 1.0;
+    const auto avgEventTime = eventTimeNs / numEvts;
+
+    sdl::log::debug("frame time: {} ms; avgEventTime: {} ({} / {})", deltaT, avgEventTime,
                     eventTime, numEvents);
 
     eventTime = 0, numEvents = 0;

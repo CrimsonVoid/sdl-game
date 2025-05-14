@@ -1,10 +1,10 @@
 #include "error.h"
 
 namespace sdlgame {
-  AppError::AppError(Tag tag, const char* msg) : message(msg), tag(tag) {}
+  AppError::AppError(ErrTag tag, const char* msg) : message(msg), tag(tag) {}
 
   const char* AppError::tag_s() const noexcept {
-    using enum Tag;
+    using enum ErrTag;
     switch (tag) {
     case Setup: return "Setup";
     case CreateWindow: return "CreateWindow";

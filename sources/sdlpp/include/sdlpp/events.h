@@ -187,19 +187,19 @@ namespace sdl::events {
   }; // namespace EventType
 
   struct Event {
-    SDL_Event event;
+    SDL_Event* event;
 
-    inline bool poll() { return SDL_PollEvent(&event); }
+    inline bool poll() { return SDL_PollEvent(event); }
 
-    inline bool wait() { return SDL_WaitEvent(&event); };
+    inline bool wait() { return SDL_WaitEvent(event); };
 
-    inline bool waitTimeout(int32_t timeoutMS) { return SDL_WaitEventTimeout(&event, timeoutMS); };
+    inline bool waitTimeout(int32_t timeoutMS) { return SDL_WaitEventTimeout(event, timeoutMS); };
 
-    inline constexpr Type type() const noexcept { return event.type; }
+    inline constexpr Type type() const noexcept { return event->type; }
 
-    inline SDL_Window* getWindow() const { return SDL_GetWindowFromEvent(&event); }
+    inline SDL_Window* getWindow() const { return SDL_GetWindowFromEvent(event); }
 
-    inline bool push() { return SDL_PushEvent(&event); }
+    inline bool push() { return SDL_PushEvent(event); }
 
     inline static bool push(SDL_Event* event) { return SDL_PushEvent(event); }
   };

@@ -48,27 +48,6 @@ void SDL_AppQuit(void* appState, SDL_AppResult res) {
   }
 }
 
-#ifdef SDL_MAIN_USE_CALLBACKS
-int main2(int argc, char* argv[]) {
-#else
-int main(int argc, char* argv[]) {
-#endif
-  // silence unused variable warnings
-  void(argc), void(argv);
-
-  sdl::log::debug.setAll();
-  printSdlVersion();
-
-  try {
-    auto g = sdlgame::Game();
-    g.runLoop();
-  } catch (const sdlgame::AppError& e) {
-    sdl::log::critical("uncaught app error ({}): {}", e.tag_s(), e.what());
-  }
-
-  return 0;
-}
-
 void printSdlVersion() {
   const auto linkVer = SDL_GetVersion();
   sdl::log::debug("SDL Compile Version: {}.{}.{}", SDL_MAJOR_VERSION, SDL_MINOR_VERSION,

@@ -35,7 +35,6 @@ namespace sdlgame {
     Game& operator=(Game&&) noexcept = delete;
     ~Game();
 
-    void runLoop(this const Game&);
     SDL_AppResult render();
     SDL_AppResult handleEvent(SDL_Event*);
     bool setFps(uint16_t fps);
