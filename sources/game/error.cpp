@@ -6,7 +6,7 @@ namespace sdlgame {
   AppError::AppError(ErrTag tag, ErrorData data, const char* msg)
       : tag(tag), data(data), message(msg) {}
 
-  const char* AppError::tag_s() const noexcept {
+  auto AppError::tag_s() const noexcept -> const char* {
     using enum ErrTag;
     switch (tag) {
     case SetupSetAppMetadata: return "SetupSetAppMetadata";
@@ -17,5 +17,5 @@ namespace sdlgame {
     }
   }
 
-  const char* AppError::what() const noexcept { return message.c_str(); }
+  auto AppError::what() const noexcept -> const char* { return message.c_str(); }
 } // namespace sdlgame

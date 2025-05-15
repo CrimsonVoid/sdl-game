@@ -29,23 +29,23 @@ namespace sdlgame {
     Game(GfxBackend = OsDefaultBackend);
     Game(const Game&) = delete;
     Game(Game&&) = delete;
-    Game& operator=(const Game&) noexcept = delete;
-    Game& operator=(Game&&) noexcept = delete;
+    auto operator=(const Game&) noexcept -> Game& = delete;
+    auto operator=(Game&&) noexcept -> Game& = delete;
     ~Game();
 
-    SDL_AppResult render();
-    SDL_AppResult handleEvent(SDL_Event*);
-    bool setFps(uint16_t fps);
+    auto render() -> SDL_AppResult;
+    auto handleEvent(SDL_Event*) -> SDL_AppResult;
+    auto setFps(uint16_t fps) -> bool;
 
   private:
     static auto setup() -> std::optional<AppError>;
-    void printFrameTimings();
+    auto printFrameTimings() -> void;
 
   private:
     SDL_Window* window;
     uint16_t fps = 60;
 
-    std::chrono::nanoseconds frameStartTime;
+    std::chrono::nanoseconds frameStartTime{};
     std::chrono::nanoseconds eventTime{0};
     uint64_t numEvents = 0;
   };

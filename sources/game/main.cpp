@@ -11,14 +11,14 @@
 
 void printSdlVersion();
 
-SDL_AppResult SDL_AppInit(void** appState, int argc, char* argv[]) {
+auto SDL_AppInit(void** appState, int argc, char* argv[]) -> SDL_AppResult {
   void(argc), void(argv);
 
   sdl::log::debug.setAll();
   printSdlVersion();
 
   try {
-    auto g = new sdlgame::Game();
+    auto* g = new sdlgame::Game();
     *appState = g;
   } catch (const sdlgame::AppError& e) {
     sdl::log::critical("uncaught app error ({}): {}", e.tag_s(), e.what());
@@ -28,18 +28,18 @@ SDL_AppResult SDL_AppInit(void** appState, int argc, char* argv[]) {
   return SDL_APP_CONTINUE;
 }
 
-SDL_AppResult SDL_AppIterate(void* appState) {
-  auto g = static_cast<sdlgame::Game*>(appState);
+auto SDL_AppIterate(void* appState) -> SDL_AppResult {
+  auto* g = static_cast<sdlgame::Game*>(appState);
   return g->render();
 }
 
-SDL_AppResult SDL_AppEvent(void* appState, SDL_Event* event) {
-  auto g = static_cast<sdlgame::Game*>(appState);
+auto SDL_AppEvent(void* appState, SDL_Event* event) -> SDL_AppResult {
+  auto* g = static_cast<sdlgame::Game*>(appState);
   return g->handleEvent(event);
 }
 
 void SDL_AppQuit(void* appState, SDL_AppResult res) {
-  auto g = static_cast<sdlgame::Game*>(appState);
+  auto* g = static_cast<sdlgame::Game*>(appState);
   delete g;
   if (res == SDL_APP_FAILURE) {
     sdl::log::error("SDL_AppQuit: app failed");

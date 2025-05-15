@@ -6,16 +6,19 @@
 #include <SDL3/SDL_timer.h>
 
 namespace sdl::timer {
-  inline std::chrono::nanoseconds getTicksNS() {
+  using f64Milliseconds = std::chrono::duration<double, std::milli>;
+
+  inline auto getTicksNS() -> std::chrono::nanoseconds {
     return std::chrono::nanoseconds{SDL_GetTicksNS()};
   }
 
-  inline std::chrono::milliseconds getTicks() { return std::chrono::milliseconds{SDL_GetTicks()}; }
+  inline auto getTicks() -> std::chrono::nanoseconds {
+    return std::chrono::milliseconds{SDL_GetTicks()};
+  }
 
   template <typename T, typename U>
-  inline std::chrono::duration<double, std::milli> f64Ms(std::chrono::duration<T, U> ns) {
-    using f64Milli = std::chrono::duration<double, std::milli>;
-    return std::chrono::duration_cast<f64Milli>(ns);
+  constexpr auto f64Ms(std::chrono::duration<T, U> ns) -> f64Milliseconds {
+    return std::chrono::duration_cast<f64Milliseconds>(ns);
   }
 } // namespace sdl::timer
 

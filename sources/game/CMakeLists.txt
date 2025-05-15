@@ -13,5 +13,5 @@ target_compile_features(game PRIVATE cxx_std_23)
 target_compile_options(game PRIVATE
   $<$<COMPILE_LANGUAGE:CXX>:${PROJECT_WARNINGS_CXX}>)
 set_target_properties(game PROPERTIES
-	CMAKE_CXX_STANDARD_REQUIRED ON
-	CMAKE_CXX_EXTENSIONS OFF)
+	CXX_STANDARD_REQUIRED ON
+	CXX_EXTENSIONS OFF)

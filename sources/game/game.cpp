@@ -1,5 +1,6 @@
 #include "game.h"
 
+#include <algorithm>
 #include <chrono>
 #include <cstdint>
 #include <optional>
@@ -21,8 +22,9 @@ namespace sdlgame {
   Game::Game(GfxBackend gfx) {
     using enum sdl::video::WindowFlags;
 
-    if (const auto res = setup(); res)
+    if (const auto res = setup(); res) {
       throw *res;
+    }
 
     auto gfxBackend = gfx == GfxBackend::Vulkan   ? Vulkan
                       : gfx == GfxBackend::Metal  ? Metal
@@ -30,7 +32,7 @@ namespace sdlgame {
                                                   : None;
     auto windowFlags = Resizable | HighPixelDensity | gfxBackend;
 
-    if (window = sdl::video::createWindow(meta::name, 800, 600, windowFlags); !window) {
+    if (window = sdl::video::createWindow(meta::name, 800, 600, windowFlags); window == nullptr) {
       throw AppError(ErrTag::CreateWindow, sdl::error::get());
     }
 
@@ -44,13 +46,13 @@ namespace sdlgame {
     sdl::init::quit();
   }
 
-  SDL_AppResult Game::render() {
+  auto Game::render() -> SDL_AppResult {
     printFrameTimings();
     frameStartTime = sdl::timer::getTicksNS();
     return SDL_APP_CONTINUE;
   }
 
-  SDL_AppResult Game::handleEvent(SDL_Event* event) {
+  auto Game::handleEvent(SDL_Event* event) -> SDL_AppResult {
     namespace events = sdl::events;
     using namespace sdl::events::EventType;
 
@@ -82,12 +84,10 @@ namespace sdlgame {
     return ret;
   }
 
-  bool Game::setFps(uint16_t newFps) {
+  auto Game::setFps(uint16_t newFps) -> bool {
     char fpsStr[4] = {'\0'};
 
-    if (newFps > 999) {
-      newFps = 999;
-    }
+    newFps = std::min<int>(newFps, 999);
 
     if (newFps < 10) {
       fpsStr[0] = '0' + static_cast<char>(newFps);
@@ -126,8 +126,6 @@ namespace sdlgame {
   }
 
   void Game::printFrameTimings() {
-    namespace chrono = std::chrono;
-
     const auto endTime = sdl::timer::getTicksNS();
     const auto deltaT = sdl::timer::f64Ms(endTime - frameStartTime);
 

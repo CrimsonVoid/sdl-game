@@ -1,11 +1,12 @@
 #pragma once
 
+#include <cstdint>
 #include <type_traits>
 
 #include <SDL3/SDL_init.h>
 
 namespace sdl::init {
-  enum struct MetadataProperty {
+  enum struct MetadataProperty : uint8_t {
     Name,
     Version,
     Identifier,
@@ -15,7 +16,7 @@ namespace sdl::init {
     Type,
   };
 
-  inline constexpr const char* mstr(MetadataProperty p) noexcept {
+  constexpr auto mstr(MetadataProperty p) noexcept -> const char* {
     using enum MetadataProperty;
 
     switch (p) {
@@ -41,35 +42,35 @@ namespace sdl::init {
     Camera = SDL_INIT_CAMERA,
   };
 
-  inline constexpr SDL_InitFlags flags_t(flags f) noexcept {
+  constexpr auto flags_t(flags f) noexcept -> SDL_InitFlags {
     return static_cast<SDL_InitFlags>(f);
   };
 
-  inline constexpr flags operator|(flags a, flags b) noexcept {
+  constexpr auto operator|(flags a, flags b) noexcept -> flags {
     return static_cast<flags>(flags_t(a) | flags_t(b));
   };
 
-  inline bool init(flags f) { return SDL_Init(flags_t(f)); }
+  inline auto init(flags f) -> bool { return SDL_Init(flags_t(f)); }
 
-  inline void quit() { return SDL_Quit(); }
+  constexpr auto quit() -> void { return SDL_Quit(); }
 
-  inline void quitSubSystem(flags f) { return SDL_QuitSubSystem(flags_t(f)); }
+  constexpr auto quitSubSystem(flags f) -> void { return SDL_QuitSubSystem(flags_t(f)); }
 
-  inline bool isMainThread() { return SDL_IsMainThread(); }
+  inline auto isMainThread() -> bool { return SDL_IsMainThread(); }
 
-  inline bool setAppMetadata(const char* name, const char* ver, const char* indentifier) {
+  inline auto setAppMetadata(const char* name, const char* ver, const char* indentifier) -> bool {
     return SDL_SetAppMetadata(name, ver, indentifier);
   }
 
-  inline bool setAppMetadataProperty(MetadataProperty p, const char* val) {
+  inline auto setAppMetadataProperty(MetadataProperty p, const char* val) -> bool {
     return SDL_SetAppMetadataProperty(mstr(p), val);
   }
 
-  inline const char* getAppMetadataProperty(MetadataProperty p) {
+  inline auto getAppMetadataProperty(MetadataProperty p) -> const char* {
     return SDL_GetAppMetadataProperty(mstr(p));
   }
 
-  inline flags wasInit(flags f) { return static_cast<flags>(SDL_WasInit(flags_t(f))); }
+  inline auto wasInit(flags f) -> flags { return static_cast<flags>(SDL_WasInit(flags_t(f))); }
 
 } // namespace sdl::init
 

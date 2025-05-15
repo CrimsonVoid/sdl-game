@@ -32,17 +32,17 @@ namespace sdl::video {
     NotFocusable = SDL_WINDOW_NOT_FOCUSABLE,
   };
 
-  inline constexpr SDL_WindowFlags windowFlags_t(WindowFlags f) noexcept {
+  constexpr auto windowFlags_t(WindowFlags f) noexcept -> SDL_WindowFlags {
     return static_cast<SDL_WindowFlags>(f);
   };
 
-  inline constexpr WindowFlags operator|(WindowFlags a, WindowFlags b) noexcept {
+  constexpr auto operator|(WindowFlags a, WindowFlags b) noexcept -> WindowFlags {
     return static_cast<WindowFlags>(windowFlags_t(a) | windowFlags_t(b));
   };
 
-  inline SDL_Window* createWindow(const char* title, int w, int h, WindowFlags f) {
+  inline auto createWindow(const char* title, int w, int h, WindowFlags f) -> SDL_Window* {
     return SDL_CreateWindow(title, w, h, windowFlags_t(f));
   }
 
-  inline void destroyWindow(SDL_Window* w) { return SDL_DestroyWindow(w); }
+  inline void destroyWindow(SDL_Window* w) { SDL_DestroyWindow(w); }
 } // namespace sdl::video

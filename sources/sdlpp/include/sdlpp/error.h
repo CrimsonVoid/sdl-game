@@ -1,15 +1,18 @@
 #pragma once
 
+#include <utility>
+
 #include <SDL3/SDL_error.h>
 
 namespace sdl::error {
-  inline const char* get() { return SDL_GetError(); }
+  inline auto get() -> const char* { return SDL_GetError(); }
 
-  inline bool clear() { return SDL_ClearError(); }
+  inline auto clear() -> bool { return SDL_ClearError(); }
 
-  template <typename... Args> inline bool set(const char* fmt, Args&&... args) {
+  template <typename... Args>
+  inline auto set(const char* fmt, Args&&... args) -> bool {
     return SDL_SetError(fmt, std::forward<Args>(args)...);
   }
 
-  inline bool setIsOOM() { return SDL_OutOfMemory(); }
+  inline auto setIsOOM() -> bool { return SDL_OutOfMemory(); }
 } // namespace sdl::error

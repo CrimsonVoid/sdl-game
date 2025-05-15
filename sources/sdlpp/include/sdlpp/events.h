@@ -1,66 +1,68 @@
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 
 #include <SDL3/SDL_events.h>
+#include <SDL3/SDL_keycode.h>
+#include <SDL3/SDL_scancode.h>
 
 namespace sdl::events {
   struct Type {
     SDL_EventType ty;
 
-    inline constexpr Type(Uint32 t) noexcept : ty(static_cast<SDL_EventType>(t)) {}
+    constexpr Type(uint32_t t) noexcept : ty(static_cast<SDL_EventType>(t)) {}
 
-    inline constexpr operator SDL_EventType() const noexcept { return ty; }
+    constexpr operator SDL_EventType() const noexcept { return ty; }
 
-    inline bool isEnabled(this Type self) { return SDL_EventEnabled(self.ty); }
+    auto isEnabled(this Type self) -> bool { return SDL_EventEnabled(self.ty); }
 
-    inline void setEnabled(this Type self, bool enabled) {
-      return SDL_SetEventEnabled(self.ty, enabled);
+    auto setEnabled(this Type self, bool enabled) -> void {
+      SDL_SetEventEnabled(self.ty, enabled);
     };
 
-    inline void flush(this Type self) { return SDL_FlushEvent(self.ty); }
+    auto flush(this Type self) -> void { return SDL_FlushEvent(self.ty); }
 
-    inline void flushRange(this Type min, Type max) { return SDL_FlushEvents(min.ty, max.ty); }
+    auto flushRange(this Type min, Type max) -> void { SDL_FlushEvents(min.ty, max.ty); }
 
-    inline bool hasEvent(this Type self) { return SDL_HasEvent(self.ty); }
+    auto hasEvent(this Type self) -> bool { return SDL_HasEvent(self.ty); }
 
-    inline bool hasEvents(this Type min, Type max) { return SDL_HasEvents(min.ty, max.ty); }
+    auto hasEvents(this Type min, Type max) -> bool { return SDL_HasEvents(min.ty, max.ty); }
   };
 
   struct Event {
     SDL_Event* event;
 
-    inline bool poll() { return SDL_PollEvent(event); }
+    auto poll() -> bool { return SDL_PollEvent(event); }
 
-    inline bool wait() { return SDL_WaitEvent(event); };
+    auto wait() -> bool { return SDL_WaitEvent(event); };
 
-    inline bool waitTimeout(int32_t timeoutMS) { return SDL_WaitEventTimeout(event, timeoutMS); };
+    auto waitTimeout(int32_t timeoutMS) -> bool { return SDL_WaitEventTimeout(event, timeoutMS); };
 
-    inline constexpr Type type() const noexcept { return event->type; }
+    [[nodiscard]] constexpr auto type() const noexcept -> Type { return event->type; }
 
-    inline SDL_Window* getWindow() const { return SDL_GetWindowFromEvent(event); }
+    [[nodiscard]] auto getWindow() const -> SDL_Window* { return SDL_GetWindowFromEvent(event); }
 
-    inline bool push() { return SDL_PushEvent(event); }
+    auto push() -> bool { return SDL_PushEvent(event); }
 
-    inline static bool push(SDL_Event* event) { return SDL_PushEvent(event); }
+    static auto push(SDL_Event* event) -> bool { return SDL_PushEvent(event); }
   };
 
-  inline void pump() { return SDL_PumpEvents(); }
+  inline void pump() { SDL_PumpEvents(); }
 
-  inline bool push(SDL_Event* event) { return SDL_PushEvent(event); }
+  inline auto push(SDL_Event* event) -> bool { return SDL_PushEvent(event); }
 
-  inline Uint32 registerEvents(int numevents) { return SDL_RegisterEvents(numevents); }
+  inline auto registerEvents(int numevents) -> uint32_t { return SDL_RegisterEvents(numevents); }
 
   struct keyCode {
     SDL_Keycode code;
-    inline constexpr keyCode(SDL_Keycode c) noexcept : code(c) {}
-    inline constexpr operator SDL_Keycode() const noexcept { return code; }
+    constexpr keyCode(SDL_Keycode c) noexcept : code(c) {}
+    constexpr operator SDL_Keycode() const noexcept { return code; }
   };
 
   struct scanCode {
     SDL_Scancode code;
-    inline constexpr scanCode(SDL_Scancode c) noexcept : code(c) {}
-    inline constexpr operator SDL_Scancode() const noexcept { return code; }
+    constexpr scanCode(SDL_Scancode c) noexcept : code(c) {}
+    constexpr operator SDL_Scancode() const noexcept { return code; }
   };
 } // namespace sdl::events
 

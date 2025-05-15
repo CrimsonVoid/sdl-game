@@ -5,7 +5,7 @@
 #include <SDL3/SDL_hints.h>
 
 namespace sdl::hints {
-  inline void resetAll() { return SDL_ResetHints(); }
+  inline auto resetAll() -> void { return SDL_ResetHints(); }
 
   enum struct Priority : std::underlying_type_t<SDL_HintPriority> {
     Default = SDL_HINT_DEFAULT,
@@ -16,13 +16,15 @@ namespace sdl::hints {
   struct Hint {
     const char* name;
 
-    inline const char* get() const { return SDL_GetHint(name); }
+    [[nodiscard]] auto get() const -> const char* { return SDL_GetHint(name); }
 
-    inline bool getBool(bool defaultVal) const { return SDL_GetHintBoolean(name, defaultVal); }
+    [[nodiscard]] auto getBool(bool defaultVal) const -> bool {
+      return SDL_GetHintBoolean(name, defaultVal);
+    }
 
-    inline bool reset() const { return SDL_ResetHint(name); }
+    [[nodiscard]] auto reset() const -> bool { return SDL_ResetHint(name); }
 
-    inline bool set(const char* val, Priority prio = Priority::Normal) const {
+    auto set(const char* val, Priority prio = Priority::Normal) const -> bool {
       return SDL_SetHintWithPriority(name, val, static_cast<SDL_HintPriority>(prio));
     }
   };

@@ -42,39 +42,37 @@ namespace sdl::log {
     Custom = SDL_LOG_CATEGORY_CUSTOM,
   };
 
-  inline constexpr SDL_LogCategory category_t(category c) noexcept {
+  constexpr auto category_t(category c) noexcept -> SDL_LogCategory {
     return static_cast<SDL_LogCategory>(c);
   }
 
   struct priority {
-    inline void setAll(this priority self) {
-      return SDL_SetLogPriorities(static_cast<SDL_LogPriority>(self.prio));
-    }
+    auto setAll(this priority self) -> void { return SDL_SetLogPriorities(self.prio); }
 
-    inline void setFor(this priority self, std::initializer_list<category> cats) {
+    auto setFor(this priority self, std::initializer_list<category> cats) {
       for (const auto cat : cats) {
         SDL_SetLogPriority(category_t(cat), self.prio);
       }
     }
 
     template <typename... Args>
-    inline void operator()(this priority self, category cat, std::format_string<Args...> fmt,
-                           Args&&... args) {
+    auto operator()(this priority self, category cat, std::format_string<Args...> fmt,
+                    Args&&... args) {
       return message(cat, self, fmt, std::forward<Args>(args)...);
     }
     template <typename... Args>
-    inline void operator()(this priority self, std::format_string<Args...> fmt, Args&&... args) {
+    auto operator()(this priority self, std::format_string<Args...> fmt, Args&&... args) -> void {
       return self(category::Application, fmt, std::forward<Args>(args)...);
     }
 
-    inline constexpr bool operator==(this priority self, priority other) noexcept {
+    constexpr auto operator==(this priority self, priority other) noexcept -> bool {
       return self.prio == other.prio;
     }
-    inline constexpr bool operator==(this priority self, SDL_LogPriority other) noexcept {
+    constexpr auto operator==(this priority self, SDL_LogPriority other) noexcept -> bool {
       return self.prio == other;
     }
 
-    inline bool setPrefix(this priority self, const char* prefix) {
+    auto setPrefix(this priority self, const char* prefix) -> bool {
       return SDL_SetLogPriorityPrefix(self.prio, prefix);
     }
 
@@ -98,9 +96,11 @@ namespace sdl::log {
                           std::format(fmt, std::forward<Args>(args)...).c_str());
   }
 
-  inline void resetPriorities() { return SDL_ResetLogPriorities(); }
+  inline auto resetPriorities() -> void { return SDL_ResetLogPriorities(); }
 
-  inline priority getPriority(category cat) { return {SDL_GetLogPriority(category_t(cat))}; }
+  inline auto getPriority(category cat) -> priority {
+    return {SDL_GetLogPriority(category_t(cat))};
+  }
 } // namespace sdl::log
 
 // todo: unimplemented

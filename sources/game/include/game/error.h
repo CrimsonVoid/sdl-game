@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 
 #include <sdlpp/init.h>
@@ -12,7 +13,7 @@ namespace sdlgame {
     const char* value;
   };
 
-  enum struct ErrTag {
+  enum struct ErrTag : uint8_t {
     SetupSetAppMetadata,
     SetupInitSubSystem,
     CreateWindow,
@@ -34,9 +35,9 @@ namespace sdlgame {
     AppError(ErrTag tag, const char* msg);
     AppError(ErrTag tag, ErrorData data, const char* msg);
 
-    const char* tag_s() const noexcept;
+    [[nodiscard]] auto tag_s() const noexcept -> const char*;
 
-    const char* what() const noexcept;
+    [[nodiscard]] auto what() const noexcept -> const char*;
   };
 
 } // namespace sdlgame

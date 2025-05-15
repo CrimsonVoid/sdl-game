@@ -12,11 +12,11 @@ target_sources(sdlpp
     FILE_SET internal
     TYPE HEADERS
     BASE_DIRS include/sdlpp)
-target_link_libraries(sdlpp PUBLIC SDL3::SDL3)
+target_link_libraries(sdlpp INTERFACE SDL3::SDL3)
 
 target_compile_features(sdlpp PRIVATE cxx_std_23)
 target_compile_options(sdlpp PRIVATE
   $<$<COMPILE_LANGUAGE:CXX>:${PROJECT_WARNINGS_CXX}>)
 set_target_properties(sdlpp PROPERTIES
-	CMAKE_CXX_STANDARD_REQUIRED ON
-	CMAKE_CXX_EXTENSIONS OFF)
+	CXX_STANDARD_REQUIRED ON
+	CXX_EXTENSIONS OFF)
