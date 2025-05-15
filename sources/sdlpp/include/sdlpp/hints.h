@@ -28,7 +28,13 @@ namespace sdl::hints {
       return SDL_SetHintWithPriority(name, val, static_cast<SDL_HintPriority>(prio));
     }
   };
+} // namespace sdl::hints
 
+// todo: unimplemented
+// SDL_AddHintCallback
+// SDL_RemoveHintCallback
+
+namespace sdl::hints {
   // clang-format off
   static constexpr Hint AllowAltTabWhileGrabbed{SDL_HINT_ALLOW_ALT_TAB_WHILE_GRABBED};
   static constexpr Hint AndroidAllowRecreateActivity{SDL_HINT_ANDROID_ALLOW_RECREATE_ACTIVITY};
@@ -275,7 +281,3 @@ namespace sdl::hints {
   static constexpr Hint XinputEnabled{SDL_HINT_XINPUT_ENABLED};
   // clang-format on
 } // namespace sdl::hints
-
-// todo: unimplemented
-// SDL_AddHintCallback
-// SDL_RemoveHintCallback

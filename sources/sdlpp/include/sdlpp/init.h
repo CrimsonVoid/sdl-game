@@ -52,9 +52,9 @@ namespace sdl::init {
 
   inline auto init(flags f) -> bool { return SDL_Init(flags_t(f)); }
 
-  constexpr auto quit() -> void { return SDL_Quit(); }
+  inline auto quit() -> void { return SDL_Quit(); }
 
-  constexpr auto quitSubSystem(flags f) -> void { return SDL_QuitSubSystem(flags_t(f)); }
+  inline auto quitSubSystem(flags f) -> void { return SDL_QuitSubSystem(flags_t(f)); }
 
   inline auto isMainThread() -> bool { return SDL_IsMainThread(); }
 

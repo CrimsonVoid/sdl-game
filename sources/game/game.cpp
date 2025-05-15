@@ -87,7 +87,7 @@ namespace sdlgame {
   auto Game::setFps(uint16_t newFps) -> bool {
     char fpsStr[4] = {'\0'};
 
-    newFps = std::min<int>(newFps, 999);
+    newFps = std::min<uint16_t>(newFps, 999);
 
     if (newFps < 10) {
       fpsStr[0] = '0' + static_cast<char>(newFps);

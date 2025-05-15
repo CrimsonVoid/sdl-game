@@ -32,17 +32,17 @@ namespace sdl::events {
   struct Event {
     SDL_Event* event;
 
-    auto poll() -> bool { return SDL_PollEvent(event); }
+    auto poll() const -> bool { return SDL_PollEvent(event); }
 
-    auto wait() -> bool { return SDL_WaitEvent(event); };
+    auto wait() const -> bool { return SDL_WaitEvent(event); };
 
-    auto waitTimeout(int32_t timeoutMS) -> bool { return SDL_WaitEventTimeout(event, timeoutMS); };
+    auto waitTimeout(int32_t timeoutMS) const -> bool { return SDL_WaitEventTimeout(event, timeoutMS); };
 
     [[nodiscard]] constexpr auto type() const noexcept -> Type { return event->type; }
 
     [[nodiscard]] auto getWindow() const -> SDL_Window* { return SDL_GetWindowFromEvent(event); }
 
-    auto push() -> bool { return SDL_PushEvent(event); }
+    auto push() const -> bool { return SDL_PushEvent(event); }
 
     static auto push(SDL_Event* event) -> bool { return SDL_PushEvent(event); }
   };
