@@ -3,16 +3,15 @@
 #include <chrono>
 #include <cstdint>
 #include <optional>
-#include <ratio>
 
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_init.h>
-#include <SDL3/SDL_timer.h>
 #include <sdlpp/error.h>
 #include <sdlpp/events.h>
 #include <sdlpp/hints.h>
 #include <sdlpp/init.h>
 #include <sdlpp/log.h>
+#include <sdlpp/timer.h>
 #include <sdlpp/video.h>
 
 #include "error.h"
@@ -36,7 +35,7 @@ namespace sdlgame {
     }
 
     setFps(fps);
-    frameStartTime = SDL_GetTicksNS();
+    frameStartTime = sdl::timer::getTicksNS();
   }
 
   Game::~Game() {
@@ -47,7 +46,7 @@ namespace sdlgame {
 
   SDL_AppResult Game::render() {
     printFrameTimings();
-    frameStartTime = SDL_GetTicksNS();
+    frameStartTime = sdl::timer::getTicksNS();
     return SDL_APP_CONTINUE;
   }
 
@@ -55,7 +54,7 @@ namespace sdlgame {
     namespace events = sdl::events;
     using namespace sdl::events::EventType;
 
-    const auto start = SDL_GetTicksNS();
+    const auto start = sdl::timer::getTicksNS();
     const auto ev = sdl::events::Event(event);
     auto ret = SDL_APP_CONTINUE;
 
@@ -77,7 +76,7 @@ namespace sdlgame {
     }
     }
 
-    eventTime += SDL_GetTicksNS() - start;
+    eventTime += sdl::timer::getTicksNS() - start;
     numEvents++;
 
     return ret;
@@ -86,33 +85,41 @@ namespace sdlgame {
   bool Game::setFps(uint16_t newFps) {
     char fpsStr[4] = {'\0'};
 
-    this->fps = newFps > 999 ? 999 : newFps;
-
-    if (fps < 10) {
-      fpsStr[0] = '0' + static_cast<char>(fps);
-    } else if (fps < 100) {
-      fpsStr[0] = '0' + static_cast<char>(fps / 10);
-      fpsStr[1] = '0' + static_cast<char>(fps % 10);
-    } else {
-      fpsStr[0] = '0' + static_cast<char>(fps / 100);
-      fpsStr[1] = '0' + static_cast<char>((fps / 10) % 10);
-      fpsStr[2] = '0' + static_cast<char>(fps % 10);
+    if (newFps > 999) {
+      newFps = 999;
     }
 
-    return sdl::hints::MainCallbackRate.set(fpsStr);
+    if (newFps < 10) {
+      fpsStr[0] = '0' + static_cast<char>(newFps);
+    } else if (newFps < 100) {
+      fpsStr[0] = '0' + static_cast<char>(newFps / 10);
+      fpsStr[1] = '0' + static_cast<char>(newFps % 10);
+    } else {
+      fpsStr[0] = '0' + static_cast<char>(newFps / 100);
+      fpsStr[1] = '0' + static_cast<char>((newFps / 10) % 10);
+      fpsStr[2] = '0' + static_cast<char>(newFps % 10);
+    }
+
+    const auto ok = sdl::hints::MainCallbackRate.set(fpsStr);
+    if (ok) {
+      fps = newFps;
+    }
+
+    return ok;
   }
 
   auto Game::setup() -> std::optional<AppError> {
     using enum sdl::init::flags;
 
-    sdl::init::setAppMetadata(meta::name, meta::version, meta::identifier);
     for (const auto& [prop, val] : meta::properties) {
-      sdl::init::setAppMetadataProperty(prop, val);
+      if (!sdl::init::setAppMetadataProperty(prop, val)) {
+        return AppError(ErrTag::SetupSetAppMetadata, {.appMetadata{prop, val}}, sdl::error::get());
+      }
     }
 
     auto flags = Audio | Video | Haptic | Gamepad | Events;
     if (!sdl::init::init(flags)) {
-      return AppError(ErrTag::Setup, sdl::error::get());
+      return AppError(ErrTag::SetupInitSubSystem, sdl::error::get());
     }
 
     return {};
@@ -120,19 +127,16 @@ namespace sdlgame {
 
   void Game::printFrameTimings() {
     namespace chrono = std::chrono;
-    using doubleMilli = chrono::duration<double, std::milli>;
 
-    const auto frameEndTime = chrono::nanoseconds{SDL_GetTicksNS()};
-    const auto startTime = chrono::nanoseconds{frameStartTime};
-    const auto deltaT = chrono::duration_cast<doubleMilli>(frameEndTime - startTime);
+    const auto endTime = sdl::timer::getTicksNS();
+    const auto deltaT = sdl::timer::f64Ms(endTime - frameStartTime);
 
-    const auto eventTimeNs = chrono::nanoseconds{eventTime};
-    const auto numEvts = numEvents != 0 ? static_cast<float64_t>(numEvents) : 1.0;
-    const auto avgEventTime = eventTimeNs / numEvts;
+    const auto numEvts = numEvents != 0 ? static_cast<double>(numEvents) : 1.0;
+    const auto avgEventTime = eventTime / numEvts;
 
     sdl::log::debug("frame time: {} ms; avgEventTime: {} ({} / {})", deltaT, avgEventTime,
                     eventTime, numEvents);
 
-    eventTime = 0, numEvents = 0;
+    eventTime = std::chrono::nanoseconds{0}, numEvents = 0;
   }
 } // namespace sdlgame

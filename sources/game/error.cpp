@@ -1,13 +1,18 @@
 #include "error.h"
 
 namespace sdlgame {
-  AppError::AppError(ErrTag tag, const char* msg) : message(msg), tag(tag) {}
+  AppError::AppError(ErrTag tag, const char* msg) : AppError(tag, ErrorData{.noData{}}, msg) {}
+
+  AppError::AppError(ErrTag tag, ErrorData data, const char* msg)
+      : tag(tag), data(data), message(msg) {}
 
   const char* AppError::tag_s() const noexcept {
     using enum ErrTag;
     switch (tag) {
-    case Setup: return "Setup";
+    case SetupSetAppMetadata: return "SetupSetAppMetadata";
+    case SetupInitSubSystem: return "SetupInitSubSystem";
     case CreateWindow: return "CreateWindow";
+    case _exhaustive_unused: return "error: should never be used";
     default: return "Unknown";
     }
   }

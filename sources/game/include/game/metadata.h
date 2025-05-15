@@ -11,6 +11,9 @@ namespace sdlgame::meta {
   constexpr auto identifier = "com.example.sdl-game";
 
   constexpr auto properties = std::array{
+      std::tuple{sdl::init::MetadataProperty::Name, name},
+      std::tuple{sdl::init::MetadataProperty::Version, version},
+      std::tuple{sdl::init::MetadataProperty::Identifier, identifier},
       std::tuple{sdl::init::MetadataProperty::Type, "game"},
       // std::tuple{sdl::init::MetadataProperty::Creator, nullptr},
       // std::tuple{sdl::init::MetadataProperty::Copyright, nullptr},

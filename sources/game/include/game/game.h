@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <cstdint>
 #include <optional>
 
@@ -8,10 +9,7 @@
 #include "error.h"
 
 union SDL_Event;
-
 struct SDL_Window;
-
-using float64_t = double;
 
 namespace sdlgame {
   enum struct GfxBackend { DX, Vulkan, Metal, OpenGL };
@@ -47,8 +45,8 @@ namespace sdlgame {
     SDL_Window* window;
     uint16_t fps = 60;
 
-    uint64_t frameStartTime;
-    uint64_t eventTime = 0;
+    std::chrono::nanoseconds frameStartTime;
+    std::chrono::nanoseconds eventTime{0};
     uint64_t numEvents = 0;
   };
 } // namespace sdlgame
