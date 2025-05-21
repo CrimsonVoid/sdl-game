@@ -14,9 +14,4 @@ target_sources(sdlpp
     BASE_DIRS include/sdlpp)
 target_link_libraries(sdlpp INTERFACE SDL3::SDL3)
 
-target_compile_features(sdlpp PRIVATE cxx_std_23)
-target_compile_options(sdlpp PRIVATE
-  $<$<COMPILE_LANGUAGE:CXX>:${PROJECT_WARNINGS_CXX}>)
-set_target_properties(sdlpp PROPERTIES
-	CXX_STANDARD_REQUIRED ON
-	CXX_EXTENSIONS OFF)
+SET_PROJECT_CXX_PROPERTIES(sdlpp)
